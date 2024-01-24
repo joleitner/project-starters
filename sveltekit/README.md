@@ -29,14 +29,7 @@ FROM node:21-alpine
 
 WORKDIR /app
 
-# install dependencies
-COPY package*.json ./
-RUN npm install
-# copy source code
-COPY . .
-
-# start dev server
-CMD [ "npm", "run", "dev"]
+USER node
 ```
 
 The `docker-compose.yml`:
@@ -58,21 +51,29 @@ services:
 Now to install SvelteKit in a Docker container run:
 
 ```bash
-docker compose run app npm init svelte@next
+docker compose run app npm create svelte@latest
 ```
 
 Follow the instructions and choose the options fitting your needs.
 
-Now you can install the dependencies:
+After the project was initialized we need to add the missing lines to the `Dockerfile` so that the container can install the dependencies and start the dev server:
 
-```bash
-docker compose run app npm install
-```
+```Dockerfile
+# check newest node version: https://hub.docker.com/_/node
+FROM node:21-alpine
 
-Because we created all files as root user inside the container and mapped the files to our development directory, we have to change the owner of the files:
+WORKDIR /app
 
-```bash
-sudo chown -R $USER:$USER app/
+# install dependencies
+COPY package*.json ./
+RUN npm install
+# copy source code
+COPY . .
+
+USER node
+
+# start dev server
+CMD [ "npm", "run", "dev"]
 ```
 
 Because SvelteKit is running in the Docker container, we have to make a little change to the npm run scripts in `package.json`:
@@ -83,6 +84,19 @@ Because SvelteKit is running in the Docker container, we have to make a little c
     ...
 }
 ```
+
+Install the dependencies once with:
+
+```bash
+docker compose run app npm install
+```
+
+> In case you are wandering why you have to run once `docker compose run app npm install` instead of just starting the container with `docker compose up`:
+>
+> - Right now we are mapping the `app` directory to the container to be able to configurate all files on the host machine
+> - The issue is that currently there is no `node_modules` directory on the host machine. That means when starting the container with `docker compose up` the `node_modules` directory just created inside the container will be overwritten and deleted by the not existing `node_modules` directory on the host machine.
+> - To solve this issue we have to install the dependencies once with `docker compose run app npm install` and then we can start the container with `docker compose up`.
+> - After finishing the configuration it is important to change the mapping to `.app/src:/app/src` in the `docker-compose.yml` file.
 
 ### Install Tailwind CSS & DaisyUI
 
@@ -132,7 +146,17 @@ Additionally add initial-scale to the meta tag in `src/app.html`:
 <meta name="viewport" content="width=device-width", initial-scale=1" />
 ```
 
+In case you want to use DaisyUI themes you have to add the following lines to `tailwind.config.js`:
+
+```js
+  daisyui: {
+    themes: ["light", "dark"],
+  },
+```
+
 ### Additional Libraries
+
+#### Iconify
 
 A very useful library for SvelteKit is [Iconfiy](https://iconify.design/docs/icon-components/svelte/). It lets you use icons with ease. To install it run:
 
@@ -150,6 +174,18 @@ To use it, search Icon [here](https://icon-sets.iconify.design/) and import it i
 <Icon icon="mdi:home" />
 ```
 
+#### theme-change
+
+A very handy library for changing your themes is [theme-change](https://github.com/saadeghi/theme-change). To install it run:
+
+```bash
+docker compose run app npm install theme-change
+```
+
+Inside the [ThemeController](./app/src/components/ThemeController.svelte) component you can see an example on how to use it.
+
+#### svelte-time
+
 When working with time [svelte-time](https://www.npmjs.com/package/svelte-time) is handy.
 
 ```bash
@@ -166,6 +202,30 @@ To use it, import it in your component:
 <time timestamp="2024-01-01" />
 ```
 
+### Component folder
+
+Depending on your preference you can create a `components` folder in `src` and add an alias to `svelte.config.js`:
+
+```js
+const config = {
+  // ...
+  kit: {
+    // ...
+    alias: {
+      $components: "./src/components",
+    },
+  },
+};
+```
+
+Afterwards you can import your own components like this:
+
+```html
+<script lang="ts">
+  import Button from "$components/Button.svelte";
+</script>
+```
+
 ## Development
 
 To start the development server run:
@@ -173,10 +233,3 @@ To start the development server run:
 ```bash
 docker compose up
 ```
-
-## TODOs & Ideas
-
-- [ ] Fix the file creation as root user
-- [ ] Add theme change
-- [ ] Think about using pnpm
-- [ ] Prepare for production
