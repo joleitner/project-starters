@@ -12,10 +12,22 @@ Dockerized SvelteKit template with DaisyUI & Tailwind CSS.
 
 You have to options to use this template:
 
-1. Just copy and adapt the files you need.
+1. Just copy and adapt the files you need. (**Recommended**)
 2. Use this README as a guide to create your own template.
 
+### Copy & Adapt
+
+I recommend to use the vscode [devcontainer](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension to open the project in a container.
+
+If you copy the `sveltekit` folder and you open it with vscode the devcontainer extension will ask you if you want to open it in a container. If you choose yes, the container will be build and you can directly start developing. Have fun!
+
 ## Getting Started
+
+### Setup devcontainer
+
+I suggest to use the [devcontainer](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension as it will improve your development experience.
+In case you haven't already, install the devcontainer extension inside vscode.
+Afterwards just copy over the `.devcontainer` folder with the preconfigured `devcontainer.json` file into your project.
 
 ### Install SveteKit in a Docker Container
 
@@ -43,20 +55,22 @@ services:
       context: ./app
     volumes:
       - ./app:/app
+      # - /app/node_modules # exclude node_modules
     ports:
       - "5173:5173"
     command: npm run dev
 ```
 
-Now to install SvelteKit in a Docker container run:
+Now we can initialize the SvelteKit project inside inside the container and install the dependencies:
 
 ```bash
 docker compose run app npm create svelte@latest
+docker compose run app npm install
 ```
 
 Follow the instructions and choose the options fitting your needs.
 
-After the project was initialized we need to add the missing lines to the `Dockerfile` so that the container can install the dependencies and start the dev server:
+After the project was initialized we now need to add some missing lines to the `Dockerfile` so that it can start the dev server:
 
 ```Dockerfile
 # check newest node version: https://hub.docker.com/_/node
@@ -67,9 +81,11 @@ WORKDIR /app
 # install dependencies
 COPY package*.json ./
 RUN npm install
+
 # copy source code
 COPY . .
 
+RUN chown -R node:node /app
 USER node
 
 # start dev server
@@ -85,32 +101,23 @@ Because SvelteKit is running in the Docker container, we have to make a little c
 }
 ```
 
-Install the dependencies once with:
+Now our preconfiguration for the container is made. We can now start and open the container directly with vscode devcontainer. This builds the container and you should be able to see the SvelteKit welcome page on `localhost:5173`.
 
-```bash
-docker compose run app npm install
-```
-
-> In case you are wandering why you have to run once `docker compose run app npm install` instead of just starting the container with `docker compose up`:
->
-> - Right now we are mapping the `app` directory to the container to be able to configurate all files on the host machine
-> - The issue is that currently there is no `node_modules` directory on the host machine. That means when starting the container with `docker compose up` the `node_modules` directory just created inside the container will be overwritten and deleted by the not existing `node_modules` directory on the host machine.
-> - To solve this issue we have to install the dependencies once with `docker compose run app npm install` and then we can start the container with `docker compose up`.
-> - After finishing the configuration it is important to change the mapping to `.app/src:/app/src` in the `docker-compose.yml` file.
+All the following steps are done inside the Docker container, opened ideally with the devcontainer extension.
 
 ### Install Tailwind CSS & DaisyUI
 
 To add Tailwind CSS we have to install some dependencies and initialize it:
 
 ```bash
-docker compose run --rm app npm install -D tailwindcss postcss autoprefixer
-docker compose run --rm app npx tailwindcss init -p
+npm install -D tailwindcss postcss autoprefixer
+npx tailwindcss init -p
 ```
 
 After that we can install DaisyUI:
 
 ```bash
-docker compose run app npm install -D daisyui@latest
+npm install -D daisyui@latest
 ```
 
 We have to adjust to parameters in `tailwind.config.js`. With content we add the paths to all files we want to use Tailwind CSS in and as plugins we add DaisyUI:
@@ -161,7 +168,7 @@ In case you want to use DaisyUI themes you have to add the following lines to `t
 A very useful library for SvelteKit is [Iconfiy](https://iconify.design/docs/icon-components/svelte/). It lets you use icons with ease. To install it run:
 
 ```bash
-docker compose run app npm install -D @iconify/svelte
+npm install -D @iconify/svelte
 ```
 
 To use it, search Icon [here](https://icon-sets.iconify.design/) and import it in your component:
@@ -179,7 +186,7 @@ To use it, search Icon [here](https://icon-sets.iconify.design/) and import it i
 A very handy library for changing your themes is [theme-change](https://github.com/saadeghi/theme-change). To install it run:
 
 ```bash
-docker compose run app npm install theme-change
+npm install theme-change
 ```
 
 Inside the [ThemeController](./app/src/components/ThemeController.svelte) component you can see an example on how to use it.
@@ -189,7 +196,7 @@ Inside the [ThemeController](./app/src/components/ThemeController.svelte) compon
 When working with time [svelte-time](https://www.npmjs.com/package/svelte-time) is handy.
 
 ```bash
-docker compose run app npm install -D svelte-time
+npm install -D svelte-time
 ```
 
 To use it, import it in your component:

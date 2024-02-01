@@ -1,0 +1,18 @@
+{
+  "name": "SvelteKit Dev Container",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/app",
+  "customizations": {
+    "vscode": {
+      "extensions": ["svelte.svelte-vscode", "bradlc.vscode-tailwindcss"],
+      "settings": {
+        "files.autoSave": "onFocusChange",
+        "files.autoSaveDelay": 1000,
+        "editor.formatOnSave": true
+        // Add other settings if needed
+      }
+    }
+  },
+  "remoteUser": "node"
+}

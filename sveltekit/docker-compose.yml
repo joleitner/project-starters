@@ -6,6 +6,7 @@ services:
       context: ./app
     volumes:
       - ./app:/app
+      - /app/node_modules # exclude node_modules
     ports:
       - "5173:5173"
     command: npm run dev
