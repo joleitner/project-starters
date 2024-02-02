@@ -1,0 +1,18 @@
+{
+  "name": "FastAPI",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/home/pyuser/app",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "files.autoSave": "onFocusChange",
+        "files.autoSaveDelay": 1000,
+        "editor.formatOnSave": true
+        // Add other settings if needed
+      },
+      "extensions": ["ms-python.python"]
+    }
+  },
+  "remoteUser": "pyuser"
+}

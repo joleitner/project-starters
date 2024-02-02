@@ -4,5 +4,5 @@ Choose the subfolder of the framework you are interested in and follow the instr
 
 ## Available templates
 
-- [SvelteKit with TailwindCSS and DaisyUI](./sveltekit/README.md)
+- [SvelteKit with TailwindCSS and DaisyUI](./sveltekit)
 - More coming soon

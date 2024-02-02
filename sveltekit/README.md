@@ -97,7 +97,7 @@ Because SvelteKit is running in the Docker container, we have to make a little c
 ```json
 "scripts": {
     "dev": "vite dev --host",
-    ...
+    //...
 }
 ```
 
