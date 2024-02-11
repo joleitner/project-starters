@@ -12,5 +12,14 @@ services:
     #   - db
     command: uvicorn app.main:app --host "0.0.0.0" --port "8000" --reload
 
-  # db:
-  #   image: mariadb
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - "db_data:/var/lib/postgresql/data/"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+volumes:
+  db_data:

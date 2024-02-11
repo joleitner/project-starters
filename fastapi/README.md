@@ -1,6 +1,6 @@
-# FastAPI Template with SQLAlchemy setup
+# FastAPI Template with SQLModel
 
 > Further information about frameworks and libraries used:
 >
 > - [FastAPI](https://fastapi.tiangolo.com/)
-> - [SQLAlchemy](https://docs.sqlalchemy.org/en/20/)
+> - [SQLModel](https://sqlmodel.tiangolo.com/)

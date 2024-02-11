@@ -1,8 +1,12 @@
 from fastapi import FastAPI
+from app.routers import users
+from app.dependencies import TokenDep
 
 app = FastAPI()
 
+app.include_router(users.router)
+
 
 @app.get("/")
-def read_root():
-    return {"Hello": "World"}
+async def root(token: str = TokenDep):
+    return {"message": "Hello World"}
