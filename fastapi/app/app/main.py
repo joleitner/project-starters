@@ -1,12 +1,15 @@
 from fastapi import FastAPI
 from app.routers import users
-from app.dependencies import TokenDep
+from app.config import settings
+# from app.dependencies import TokenDep
 
-app = FastAPI()
+app = FastAPI(
+    title=settings.APP_NAME,
+)
 
-app.include_router(users.router)
+app.include_router(users.router, prefix="/users", tags=["users"])
 
 
 @app.get("/")
-async def root(token: str = TokenDep):
-    return {"message": "Hello World"}
+async def root():
+    return {"message": f"Hello World from {settings.APP_NAME}"}

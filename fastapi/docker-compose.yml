@@ -8,8 +8,10 @@ services:
       - ./app:/home/pyuser/app
     ports:
       - "8000:8000"
-    # depends_on:
-    #   - db
+    env_file:
+      - .env
+    depends_on:
+      - db
     command: uvicorn app.main:app --host "0.0.0.0" --port "8000" --reload
 
   db:
@@ -17,9 +19,9 @@ services:
     volumes:
       - "db_data:/var/lib/postgresql/data/"
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
   db_data:
