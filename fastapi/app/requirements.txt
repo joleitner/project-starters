@@ -4,4 +4,6 @@ pydantic-settings
 sqlmodel
 psycopg2-binary
 alembic
+passlib[bcrypt]
 python-multipart
+python-jose[cryptography]

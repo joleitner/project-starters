@@ -10,7 +10,7 @@ from alembic import context
 config = context.config
 
 def get_url() -> str:
-    from app.config import settings
+    from app.core.config import settings
 
     return str(settings.POSTGRES_URI)
 

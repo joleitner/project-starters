@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 
-from app.dependencies import SessionDep
+from app.dependencies import SessionDep, TokenDep, CurrentUser
 from app.models import UserCreate, User, UserOut
 from app import crud
 
@@ -20,6 +20,12 @@ def create_user(db: SessionDep, user_create: UserCreate):
     return user
 
 
+@router.get("/me", response_model=UserOut)
+def read_users_me(current_user: CurrentUser):
+    return current_user
+
+
 @router.get("/{user_id}", response_model=UserOut)
 def get_users(user_id: int, db: SessionDep):
     return crud.user.get(db, user_id=user_id)
+

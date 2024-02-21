@@ -71,3 +71,19 @@ alembic revision --autogenerate -m "init"
 ```bash
 alembic upgrade head
 ```
+
+## Security / Authentication
+
+Install `passlib[bcrypt]` for password hashing.
+
+password hashing..
+
+## Authentication with JWT
+
+We need to add `python-multipart` and `python-jose[cryptography]` to the [requirements.txt](./app/requirements.txt) file. `python-multipart` is necessary for OAuth2 to use form data and `python-jose` is necessary for JWT token creation and validation.
+
+Create own secret key for JWT token and add it to the `.env` file.
+
+```bash
+openssl rand -hex 32
+```
