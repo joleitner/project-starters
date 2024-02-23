@@ -1,8 +1,11 @@
 # My personal project templates
 
-Choose the subfolder of the framework you are interested in and follow the instructions in the README.md file
+This repository contains a collection of project templates, which I like to use as a starting point.
+
+In each subfolder, you will find a README.md file with instructions on how to use the template or how to modify it to fit your needs.
 
 ## Available templates
 
 - [SvelteKit with TailwindCSS and DaisyUI](./sveltekit)
-- More coming soon
+- [FastAPI with PostgreSQL and SQLModel](./fastapi)
+- more to come...

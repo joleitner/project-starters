@@ -5,7 +5,7 @@ from pydantic import (
     validator,
 )
 
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int = 5432
     POSTGRES_URI: Optional[PostgresDsn] = None
     
-    # needs to be updated (deprecated)
+    # TODO: needs to be updated (deprecated)
     @validator("POSTGRES_URI", pre=True)
     def assemble_db_connection(cls, v: Optional[str], values: Dict[str, Any]) -> Any:
         if isinstance(v, str):
